@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>목차 + 제품 페이지 (페이지 번호 & 목차 버튼)</title>
+  <title>K-FOOD Catalog</title>
   <style>
     html {
       scroll-behavior: smooth;
-    }
-
-    @page {
-      size: A4;
-      margin: 0;
     }
 
     body {
@@ -22,26 +17,23 @@
 
     .container {
       width: 21cm;
-      height: 29.7cm;
+      min-height: 29.7cm;
       margin: 1cm auto;
       background-color: white;
-      position: relative;
-      page-break-after: always;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       padding: 1cm;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      page-break-after: always;
     }
 
     .title {
       font-size: 36px;
       font-weight: bold;
       text-align: center;
-      margin-top: 0cm;
-      margin-bottom: 0cm;
-      flex-shrink: 0;
+      margin-top: 0;
+      margin-bottom: 1cm;
     }
 
     .toc ul {
@@ -49,7 +41,6 @@
       line-height: 2em;
       list-style: none;
       padding-left: 0;
-      flex-shrink: 0;
     }
 
     .toc a {
@@ -62,23 +53,26 @@
       color: #007acc;
     }
 
-    /* 콘텐츠 영역 (product 페이지 텍스트 등) */
     .content {
-      position: relative;
-      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
 
-    .product {
-      position: absolute;
-      top: 0.3cm;
-      left: 1cm;
+    .product-title {
       font-size: 30px;
+      font-weight: bold;
+      text-align: center;
     }
 
-    .image {
-      position: absolute;
-      top: calc(1.5cm + 30px + 1cm);
-      left: 1cm;
+    .product-row {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .product-image {
       width: 300px;
       height: 300px;
       background-color: #ccc;
@@ -86,57 +80,47 @@
       align-items: center;
       justify-content: center;
       font-size: 14px;
-    }
-
-    .image-text {
-      position: absolute;
-      top: calc(0.5cm + 3px + 1cm + 70px - 7px);
-      left: calc(1cm + 300px + 1cm);
-      font-size: 14px;
-    }
-
-    .how-to-eat {
-      position: absolute;
-      top: calc(1.5cm + 30px + 1cm + 300px + 1.5cm);
-      left: 1cm;
-      font-size: 18px;
-    }
-
-    .how-to-eat-desc {
-      position: absolute;
-      top: calc(1.5cm + 30px + 1cm + 300px + 1.5cm + 18px + 1cm);
-      left: 1cm;
-      font-size: 14px;
-    }
-
-    .details {
-      position: absolute;
-      top: calc(1.5cm + 30px + 1cm + 300px + 7cm);
-      left: 1cm;
-      font-size: 18px;
-    }
-
-    .details-desc {
-      position: absolute;
-      top: calc(1.5cm + 30px + 1cm + 300px + 7cm + 18px + 1cm);
-      left: 1cm;
-      font-size: 14px;
-    }
-
-    /* 페이지 번호 */
-    .page-number {
-      text-align: center;
-      font-size: 12px;
-      color: #666;
-      margin-top: 65rem;
       flex-shrink: 0;
     }
 
-    /* 목차로 돌아가기 버튼 */
+    .product-description {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .how-to-eat,
+    .product-details {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .how-to-eat h3,
+    .product-details h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-details table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .product-details td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      text-align: left;
+      width: 25%;
+    }
+
+    .product-details tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
     .back-to-toc {
-      position: absolute;
-      bottom: 2cm;
-      right: 2cm;
+      align-self: flex-end;
       background-color: #007acc;
       color: white;
       border: none;
@@ -146,407 +130,169 @@
       cursor: pointer;
       text-decoration: none;
       transition: background-color 0.3s ease;
-      z-index: 10;
+      margin-top: 2rem;
     }
 
     .back-to-toc:hover {
       background-color: #005fa3;
     }
 
-    /* 반응형 */
-    @media (max-width: 768px) {
-      .container {
-        transform: scale(0.6);
-        transform-origin: top left;
-        width: auto;
-        height: auto;
-        padding: 1rem;
-      }
-      .back-to-toc {
-        bottom: 1rem;
-        right: 1rem;
-        padding: 0.4rem 0.8rem;
-        font-size: 12px;
-      }
+    .page-number {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: auto;
+      padding-top: 1rem;
     }
+
+    @media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .product-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+
+  .product-description {
+    width: 100%;
+    text-align: left;
+    margin-top: 1rem;
+  }
+
+  .extra-images {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .extra-images img {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 1rem;
+  }
+
+  .back-to-toc {
+    align-self: center;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+    position: static;
+  }
+
+  .product-details table td {
+    font-size: 13px;
+  }
+}
+
+    .extra-images {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.extra-images img {
+  width: 200px;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
   </style>
 </head>
 <body>
 
-<!-- 목차 페이지 -->
+<!-- ✅ 목차 페이지 -->
 <div class="container" id="toc">
-  <div class="title">ECRM<br>K-FOOD list</div>
+  <div class="title">ECRM<br>K-FOOD List</div>
   <div class="toc">
     <ul>
-      <li>Ambient Products</a></li>
-      <li><a href="#Cleopatra Salt Seaweed">- Cleopatra Salt Seaweed</a></li>
-      <li><a href="#Siktak Seaweed">- Siktak Seaweed</a></li>
+      <li><strong>Ambient Products</strong></li>
+      <li><a href="#Cleopatra-Salt-Seaweed">- Cleopatra Salt Seaweed</a></li>
+      <li><a href="#Siktak-Seaweed">- Siktak Seaweed</a></li>
       <li><a href="#Bugak">- Bugak: Gim, Curry Gim, Kelp</a></li>
-      <li><a href="#Pokpoong">- Pokpoong Tteokbokki</a></li>
-      <li><a href="#Chive Pancake">- Topokki & Chive Pancake</a></li>
-      <li><a href="#Jal-Jal Rice Chips">- Jal-Jal Rice Chips: Stir-fried Konjac, Five grains, Brown rice, Bean & Squid, Anchovies</a></li>
-      <li><a href="#Honey Rice Snack">- Honey Rice Snack</a></li>
-      <li><a href="#Brown Rice Chips">- Brown Rice Chips</a></li>
-      <li><a href="#Tofu Cracker">- Sprouted Whole Wheat Tofu Cracker</a></li>
-      <li><a href="#DalChip">- DalChip: Choco sand, Strawberry sand</a></li>
-      <li><a href="#Choco Crunch">- Choco Crunch: Citron, Apple mango, Loquat</a></li>
-      <li><a href="#Kimchips">- Kimchips: Original, Frame</a></li>
-      <li><a href="#Kombucha">- Yuja Kombucha with Bilberry</a></li>
-      <li><a href="#Cocogurt">- Cocogurt</a></li>
-      <li><a href="#Shrimp Noodles">- Hot Spicy Shrimp Stir-Fried Noodles: Original, Carbonara, Cheese</a></li>
-      <li><a href="#Cleopatra salt">- Cleopatra salt</a></li>
-      <li><a href="#Kimchi Salad Mix">- Kimchi Salad Mix</a></li>
-      <li><a href="#Red Bang">- Red Bang</a></li>
-      <li>Frozen Products</a></li>
-      <li><a href="#Corn Dog">- Mozzarella Corn Dog: Whole, Cajun Potato</a></li>
-      <li><a href="#Shaped bun">- Shaped bun: Flower, Fish, Manju</a></li>
-      <li><a href="#K-Pancake">- K-Pancake: Kimchi, Potato</a></li>
-      <li><a href="#Porridge">- Porridge: Flounder, Spicy flounder, Abalone</a></li>
-      <li><a href="#Frozen Meal">- Frozen Meal: Samll Kimbap, Yubu sushi</a></li>
+      <li><strong>Frozen Products</strong></li>
+      <li><a href="#Corn-Dog">- Mozzarella Corn Dog: Whole, Cajun Potato</a></li>
+      <li><a href="#Shaped-bun">- Shaped bun: Flower, Fish, Manju</a></li>
     </ul>
+  </div>
+</div>
+
+<!-- Cleopatra Salt Seaweed 제품 페이지 -->
+<div class="container" id="Cleopatra-Salt-Seaweed">
+  <div class="content">
+
+    <div class="product-title">Cleopatra Salt Seaweed</div>
+
+    <div class="product-row">
+      <div class="product-image">이미지</div>
+
+      <div class="product-description">
+        <p>Dried seaweeds, also known as Gim, are one of the traditional Korean cuisines.</p>
+        <p>This Cleopatra Salt Seaweed uses “Egyptian salt”, which is 100% natural rock pure salt, and raw seaweed from Wando – a region certified by NASA as a “Healthy Premium” area.</p>
+        <p>Individual packaging per serving makes it easy to store and carry. Seaweed has very high protein and iodine content, beneficial especially for children.</p>
+      </div>
     </div>
-</div>
 
-<!-- 제품 소개 페이지 -->
-<div class="container" id="Cleopatra Salt Seaweed">
-  <div class="content">
-    <div class="product">Cleopatra Salt Seaweed</div>
-    <div class="image">이미지</div>
-    <div class="image-text">Dried seaweeds also named Gim, is one of traditional Korean cuisine.<br><br>This Cleopatra Salt Seaweed use “Egyptian salt”, which is 100% natural rock pure salt and raw seaweed from Wando. Wando region in Korea uses seaweed from a NASA-certified “Healthy Premium” region. Individual packing per serving size makes easy to storage and carry.<br><br>
-Seaweed has a very high protein content (Iodine for child) among vegetable ingredients.
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">
-Try to eat with any food.<br>
-Eat as snacks.<br>
-Eat with short-grain rice is the BEST!
-</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">Weight	0.14 oz per each
-1.13 oz per pack	Storage	Ambient
-Selling unit	8ea per pack	Shelf life	12 months
-Unit per Carton	16 packs	Carton per pallet	36 cartons
-Certificate	HACCP		
-</div>
+    <div class="how-to-eat">
+      <h3>How to Eat</h3>
+      <p>
+        Try to eat it with any food.<br>
+        Eat as a snack.<br>
+        Eating with short-grain rice is the best!
+      </p>
+    </div>
+
+    <div class="product-details">
+      <h3>Details</h3>
+      <table>
+        <tr>
+          <td><strong>Weight</strong></td>
+          <td>0.14 oz each</td>
+          <td><strong>Pack</strong></td>
+          <td>1.13 oz per pack</td>
+        </tr>
+        <tr>
+          <td><strong>Storage</strong></td>
+          <td>Ambient</td>
+          <td><strong>Selling unit</strong></td>
+          <td>8ea per pack</td>
+        </tr>
+        <tr>
+          <td><strong>Shelf life</strong></td>
+          <td>12 months</td>
+          <td><strong>Units/Carton</strong></td>
+          <td>16 packs</td>
+        </tr>
+        <tr>
+          <td><strong>Cartons/Pallet</strong></td>
+          <td>36 cartons</td>
+          <td><strong>Certificate</strong></td>
+          <td>HACCP</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ✅ 추가 이미지 영역 -->
+    <div class="extra-images">
+      <img src="image1.jpg" alt="Package Front" />
+      <img src="image2.jpg" alt="Package Back" />
+      <img src="image3.jpg" alt="Serving Suggestion" />
+    </div>
+
+    <a href="#toc" class="back-to-toc" aria-label="Back to Table of Contents">Top</a>
+    <div class="page-number">1</div>
+
   </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">1</div>
 </div>
-</div>
-
-<div class="container" id="Siktak Seaweed">
-  <div class="content">
-    <div class="product">Siktak Seaweed</div>
-    <div class="image">이미지</div>
-    <div class="image-text">A product of wisdom accumulated over 200 years by the ancestors of this region, is produced using the stilt-type method (traditional farming) on the clean tidal flats of Wando-gun, and is a premium seaweed that is recognized by consumers first for its excellent taste and flavor due to its appropriate exposure to natural light.
-</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">2</div>
-</div>
-
-<div class="container" id="Bugak">
-  <div class="content">
-    <div class="product">Bugak: Gim, Curry Gim, Kelp</div>
-    <div class="image">이미지</div>
-    <div class="image-text">Bugak is a luxurious snack and is considered a representative handmade snack of Korean cuisine.<br><br>Gim Bugak is a traditional nutritious snack with a crispy texture made by coating gim(seaweed) grown in clean waters with a thin layer of glutinous rice paste, drying it, and then frying it.
-<br>Curry Gim Bugak is made by spreading a thin layer of glutinous rice paste on gim(seaweed) grown in clean waters, drying it, and then deep-frying it. Curry seasoning is added to it to bring out its flavor.<br>Kelp Bugak is a traditional nutritious snack with a crispy texture made by coating kelp grown in clean waters with a thin layer of glutinous rice paste, drying it, and then frying it.</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">3</div>
-</div>
-
-<div class="container" id="Pokpoong">
-  <div class="content">
-    <div class="product">Pokpoong Tteokbokki</div>
-    <div class="image">이미지</div>
-    <div class="image-text">The chewy texture is basic because the rice cake has holes in it, and when cooked, the rice cake puffs up and the Tteokbokki sauce soaks into the holes, allowing you to enjoy an upgraded flavor.<br>
-Adding green onion and cabbage flakes for an enhanced flavor!<br> 
-Equipped with a special flake powder sauce developed through experience and know-how, defining the taste of Tteokbokki sauce preferred by all ages.</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">4</div>
-</div>
-
-<div class="container" id="Chive Pancake">
-  <div class="content">
-    <div class="product">Topokki & Chive Pancake</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">5</div>
-</div>
-
-<div class="container" id="Jal-Jal Rice Chips"> 
-  <div class="content">
-    <div class="product">Jal-Jal Rice Chips: Stir-fried Konjac, Five grains, Brown rice, Bean & Squid, Anchovies</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">6</div>
-</div>
-
-<div class="container" id="Honey Rice Snack">
-  <div class="content">
-    <div class="product">Honey Rice Snack</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">7</div>
-</div>
-
-<div class="container" id="Brown Rice Chips">
-  <div class="content">
-    <div class="product">Brown Rice Chips</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">8</div>
-</div>
-
-<div class="container" id="Tofu Cracker">
-  <div class="content">
-    <div class="product">Sprouted Whole Wheat Tofu Cracker</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">9</div>
-</div>
-
-<div class="container" id="DalChip">
-  <div class="content">
-    <div class="product">DalChip: Choco sand, Strawberry sand</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">10</div>
-</div>
-
-<div class="container" id="Choco Crunch">
-  <div class="content">
-    <div class="product">Choco Crunch: Citron, Apple mango, Loquat</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">12</div>
-</div>
-
-<div class="container" id="Kimchips">
-  <div class="content">
-    <div class="product">Kimchips: Original, Frame</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">11</div>
-</div>
-
-<div class="container" id="Kombucha">
-  <div class="content">
-    <div class="product">Yuja Kombucha with Bilberry</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">13</div>
-</div>
-
-<div class="container" id="Cocogurt">
-  <div class="content">
-    <div class="product">Cocogurt</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">14</div>
-</div>
-
-<div class="container" id="Shrimp Noodles">
-  <div class="content">
-    <div class="product">Hot Spicy Shrimp Stir-Fried Noodles: Original, Carbonara, Cheese</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">15</div>
-</div>
-
-<div class="container" id="Cleopatra salt">
-  <div class="content">
-    <div class="product">Cleopatra salt</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">17</div>
-</div>
-
-<div class="container" id="Kimchi Salad Mix">
-  <div class="content">
-    <div class="product">Kimchi Salad Mix</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">18</div>
-</div>
-
-<div class="container" id="Red Bang">
-  <div class="content">
-    <div class="product">Red Bang</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">19</div>
-</div>
-
-<div class="container" id="Corn Dog">
-  <div class="content">
-    <div class="product">Mozzarella Corn Dog: Whole, Cajun Potato</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">20</div>
-</div>
-
-<div class="container" id="Shaped bun">
-  <div class="content">
-    <div class="product">Shaped bun: Flower, Fish, Manju</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">21</div>
-</div>
-
-<div class="container" id="K-Pancake">
-  <div class="content">
-    <div class="product">K-Pancake: Kimchi, Potato</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">22</div>
-</div>
-
-<div class="container" id="Porridge">
-  <div class="content">
-    <div class="product">Porridge: Flounder, Spicy flounder, Abalone</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">23</div>
-</div>
-
-<div class="container" id="Frozen Meal">
-  <div class="content">
-    <div class="product">Frozen Meal: Samll Kimbap, Yubu sushi</div>
-    <div class="image">이미지</div>
-    <div class="image-text">abc</div>
-    <div class="how-to-eat" id="how-to-eat">how to eat?</div>
-    <div class="how-to-eat-desc">abc</div>
-    <div class="details" id="details">Details</div>
-    <div class="details-desc">abc</div>
-  </div>
-  <a href="#toc" class="back-to-toc" aria-label="Top">Top</a>
-  <div class="page-number">24</div>
-</div>
-
-</body>
-</html>
-
-
-
